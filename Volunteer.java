@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 import java.security.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
@@ -10,12 +11,17 @@ public class Volunteer
 	KeyPair keyPair;
 	Volunteer()throws Exception
 	{
-		ServerSocket serverSocket=new ServerSocket(5000);
+		System.out.println("Enter the port");
+		int port=new Scanner(System.in).nextInt();
+		System.out.println(port);
+		ServerSocket serverSocket=new ServerSocket(port);
 		Socket prevSocket=serverSocket.accept();
-		prevois=new ObjectInputStream(prevSocket.getInputStream());
+		System.out.println("Peer Connected");
 		prevoos=new ObjectOutputStream(prevSocket.getOutputStream());
+		prevois=new ObjectInputStream(prevSocket.getInputStream());
 		genKey();
 		prevoos.writeObject(keyPair.getPublic());
+		System.out.println("Sent Public Key");
 	}
 	void genKey()throws Exception
 	{
@@ -26,6 +32,7 @@ public class Volunteer
 	void extendPath()throws Exception
 	{
 		ExtendPath obj=(ExtendPath)decrypt((SealedObject)prevois.readObject());
+		System.out.println("Extending path to "+obj.ip+" "+obj.port);
 		Socket nextSocket=new Socket(obj.ip,obj.port);
 		nextois=new ObjectInputStream(nextSocket.getInputStream());
 		nextoos=new ObjectOutputStream(nextSocket.getOutputStream());

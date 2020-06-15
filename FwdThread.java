@@ -9,8 +9,11 @@ class FwdThread implements Runnable
 	{
 		try
 		{
-			Object obj=vol.prevois.readObject();
-			vol.nextoos.writeObject(obj);
+			while(true)
+			{
+				Object obj=vol.prevois.readObject();
+				vol.nextoos.writeObject(obj);
+			}
 		}catch(Exception e){}
 	}
 }

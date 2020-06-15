@@ -9,8 +9,11 @@ class RevThread implements Runnable
 	{
 		try
 		{
-			Object obj=vol.nextois.readObject();
-			vol.prevoos.writeObject(obj);
+			while(true)
+			{
+				Object obj=vol.nextois.readObject();
+				vol.prevoos.writeObject(obj);
+			}
 		}catch(Exception e){}
 	}
 }
