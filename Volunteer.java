@@ -1,3 +1,4 @@
+package MyTor;
 import java.io.*;
 import java.util.*;
 import java.security.*;
@@ -9,24 +10,18 @@ public class Volunteer
 	ObjectInputStream nextois,prevois;
 	ObjectOutputStream nextoos,prevoos;
 	KeyPair keyPair;
+	ServerSocket serverSocket;
 	Volunteer()throws Exception
 	{
 		System.out.println("Enter the port");
 		int port=new Scanner(System.in).nextInt();
 		System.out.println(port);
-		ServerSocket serverSocket=new ServerSocket(port);
-		Socket prevSocket=serverSocket.accept();
-		System.out.println("Peer Connected");
-		prevoos=new ObjectOutputStream(prevSocket.getOutputStream());
-		prevois=new ObjectInputStream(prevSocket.getInputStream());
-		genKey();
-		prevoos.writeObject(keyPair.getPublic());
-		System.out.println("Sent Public Key");
+		serverSocket=new ServerSocket(port);
 	}
 	void genKey()throws Exception
 	{
 		KeyPairGenerator keyGen=KeyPairGenerator.getInstance("RSA");
-		keyGen.initialize(1024);
+		keyGen.initialize(1024*2);
 		keyPair=keyGen.genKeyPair();
 	}
 	void extendPath()throws Exception
@@ -46,9 +41,21 @@ public class Volunteer
 	public static void main(String args[])throws Exception
 	{
 		Volunteer vol=new Volunteer();
-		vol.extendPath();
-		FwdThread fthread=new FwdThread(vol);
-		RevThread rthread=new RevThread(vol);
+		while(true)
+			vol.init();
+	}
+	void init()throws Exception
+	{
+		Socket prevSocket=serverSocket.accept();
+		System.out.println("Peer Connected");
+		prevoos=new ObjectOutputStream(prevSocket.getOutputStream());
+		prevois=new ObjectInputStream(prevSocket.getInputStream());
+		genKey();
+		prevoos.writeObject(keyPair.getPublic());
+		System.out.println("Sent Public Key");
+		this.extendPath();
+		FwdThread fthread=new FwdThread(this);
+		RevThread rthread=new RevThread(this);
 		new Thread(fthread).start();
 		new Thread(rthread).start();
 	}

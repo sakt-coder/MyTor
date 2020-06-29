@@ -1,4 +1,5 @@
-class RevThread implements Runnable
+package MyTor;
+public class RevThread implements Runnable
 {
 	Volunteer vol;
 	RevThread(Volunteer vol)

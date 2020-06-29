@@ -1,3 +1,4 @@
+package MyTor;
 import java.io.*;
 import java.security.*;
 import javax.crypto.*;
@@ -16,17 +17,27 @@ public class TorSocket
 		this.ois=ois;
 		this.oos=oos;
 	}
-	void writeObject(Serializable ob)throws Exception
+	public void writeObject(Serializable ob)throws Exception
 	{
 		Cipher cipher=Cipher.getInstance("RSA");
 		cipher.init(Cipher.ENCRYPT_MODE,clientKey);
 		oos.writeObject(new SealedObject(ob,cipher));
 	}
-	Object readObject()throws Exception
+	public Object readObject()throws Exception
 	{
 		SealedObject obj=(SealedObject)ois.readObject();
 		Cipher cipher=Cipher.getInstance("RSA");
 		cipher.init(Cipher.DECRYPT_MODE,myKey);
 		return obj.getObject(cipher);
+	}
+	public void close()throws Exception
+	{
+		ois.close();
+		oos.close();
+		//TODO - close the volunteers also
+	}
+	public void flush()throws Exception
+	{
+		oos.flush();
 	}
 }

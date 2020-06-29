@@ -1,4 +1,5 @@
-class FwdThread implements Runnable
+package MyTor;
+public class FwdThread implements Runnable
 {
 	Volunteer vol;
 	FwdThread(Volunteer vol)

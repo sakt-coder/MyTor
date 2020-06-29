@@ -1,3 +1,4 @@
+package MyTor;
 import java.io.*;
 import java.util.*;
 import java.security.*;
@@ -7,11 +8,11 @@ import java.net.*;
 public class TorServer
 {
 	ServerSocket serverSocket;
-	TorServer(int port)throws Exception
+	public TorServer(int port)throws Exception
 	{
 		serverSocket=new ServerSocket(port);
 	}
-	TorSocket accept()throws Exception
+	public TorSocket accept()throws Exception
 	{
 		Socket socket=serverSocket.accept();
 		ObjectOutputStream oos=new ObjectOutputStream(socket.getOutputStream());
@@ -24,7 +25,7 @@ public class TorServer
 	KeyPair genKey()throws Exception
 	{
 		KeyPairGenerator keyGen=KeyPairGenerator.getInstance("RSA");
-		keyGen.initialize(1024);
+		keyGen.initialize(1024*2);
 		return keyGen.genKeyPair();
 	}
 }
